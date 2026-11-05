@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_memories/core/cubit/weather_cubit.dart';
+import 'package:my_memories/core/cubit/weather_state.dart';
 import 'package:my_memories/core/theme/app_colors.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -71,9 +74,25 @@ class HomeHeader extends StatelessWidget {
             
             const SizedBox(width: 10),
             
-           
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+           BlocBuilder<WeatherCubit,WeatherState>(
+            builder: (context,state){
+              if(state is WeatherLoading){
+                return Container(
+                  padding: const EdgeInsets.all(12.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.85),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2,color:Colors.orange),
+                    ),
+                );
+              }
+              else if(state is WeatherLoaded){
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.85), 
                 borderRadius: BorderRadius.circular(15.0),
@@ -84,8 +103,8 @@ class HomeHeader extends StatelessWidget {
                     offset: const Offset(0, 4),
                   )
                 ],
-              ),
-              child: Row(
+                  ),
+                 child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(
@@ -97,16 +116,16 @@ class HomeHeader extends StatelessWidget {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        '24°',
-                        style: TextStyle(
+                      Text(
+                        '${state.weather.temp}°',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primaryColor,
                         ),
                       ),
                       Text(
-                        'Clear',
+                        '${state.weather.description}',
                         style: TextStyle(
                           fontSize: 11,
                           color: Colors.grey,
@@ -117,7 +136,15 @@ class HomeHeader extends StatelessWidget {
                   )
                 ],
               ),
+                  );
+            
+              }
+              else{
+                return const SizedBox();
+              }
+            }
             )
+           
           ],
         ),
       ),

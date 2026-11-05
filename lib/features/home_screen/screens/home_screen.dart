@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:my_memories/core/cubit/location_cubit.dart';
 import 'package:my_memories/core/cubit/location_state.dart';
+import 'package:my_memories/core/cubit/weather_cubit.dart';
 import 'package:my_memories/core/theme/app_colors.dart';
 import 'package:my_memories/features/home_screen/widgets/home_bottom_bar.dart';
 import 'package:my_memories/features/home_screen/widgets/home_header.dart';
@@ -26,6 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
       listener: (context,state){
         if(state is LocationLoaded){
           _mapController.move(state.currentPosition, 15.0);
+          context.read<WeatherCubit>().fetchWeather(
+            state.currentPosition.latitude,
+            state.currentPosition.longitude,
+          );
         }
       }, 
       builder: (context,state){
